@@ -40,9 +40,13 @@ app.use((err,req,res,next)=>{
 
 // Practice
 //1.
-app.all("/users",(req, res, next) => {
-    res.json(users)
-})
+const usersRouter = express.Router();
+usersRouter.use((req, res, next) => {
+    res.json(users);
+    console.log(users);
+    next();
+});
+app.use("/users",usersRouter)
 
 //2.
 const logUser = (req,res,next)=>{
@@ -55,17 +59,20 @@ app.post("/users/create",(req,res,next)=>{
 },logUser)
 
 //3.
-app.all("/products",(req, res, next) => {
+const productsRouter = express.Router();
+productsRouter.use((req, res, next) => {
     console.log("hello from products");
-})
+});
+app.use("/products", productsRouter)
 
 //4. 
 const products = [`keyboard`, `mouse`];
 app.put("/products/update", (req,res,next)=>{
     const replacement = req.body.product;
     products.splice(1,1,replacement);
-    console.log(products);
-    res.json('update done');
+    // for testing purposes
+    // console.log(products);
+    // res.json('update done');
     next();
 })
 
@@ -73,6 +80,25 @@ app.get("/users", (req, res, next) => {
     res.json(users);
 });
 
+//5.
+const pRouter = (req,res,next)=>{
+    console.log("/products");
+    next()
+}
+app.use("/products", pRouter);
+
+//6.
+// app.use((req,res,next)=>{
+//     if (res.body){
+//         const err = new Error("page doesn't exist")
+//         err.status = 404
+//         next(err)
+//     }
+// })
+// app.use((err,req,res,next)=>{
+//     res.status(err.status);
+//     res.json("NOT FOUND");
+// })
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

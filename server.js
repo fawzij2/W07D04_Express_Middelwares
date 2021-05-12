@@ -5,8 +5,8 @@ const port = 3000;
 
 app.use(express.json());
 
-const users = [];
-// "John", "Mark"
+const users = ["John", "Mark"];
+
 
 // Pulse Check
 //1. 
@@ -35,6 +35,38 @@ app.use("/users", logMethod);
 app.use((err,req,res,next)=>{
     res.status(err.status);
     res.json("no users")
+})
+
+
+// Practice
+//1.
+app.all("/users",(req, res, next) => {
+    res.json(users)
+})
+
+//2.
+const logUser = (req,res,next)=>{
+    console.log(req.body);
+}
+app.post("/users/create",(req,res,next)=>{
+    const addUser = req.body.name;
+    users.push(addUser)
+    next()
+},logUser)
+
+//3.
+app.all("/products",(req, res, next) => {
+    console.log("hello from products");
+})
+
+//4. 
+const products = [`keyboard`, `mouse`];
+app.put("/products/update", (req,res,next)=>{
+    const replacement = req.body.product;
+    products.splice(1,1,replacement);
+    console.log(products);
+    res.json('update done');
+    next();
 })
 
 app.get("/users", (req, res, next) => {

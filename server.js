@@ -7,13 +7,23 @@ app.use(express.json());
 
 const users = ["John", "Mark"];
 
-app.use(logUsers())
+
 // Pulse Check
 //1. 
 const logUsers = (req,res,next)=>{
     console.log(users);
-    // next()
+    next();
 }
+
+//2.
+app.use(logUsers);
+
+//3.
+const logMethod = (req,res,next)=>{
+    console.log(req.method);
+    next()
+}
+app.use("/users", logMethod);
 
 app.get("/users", (req, res, next) => {
     res.json(users);

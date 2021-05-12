@@ -5,8 +5,8 @@ const port = 3000;
 
 app.use(express.json());
 
-const users = ["John", "Mark"];
-
+const users = [];
+// "John", "Mark"
 
 // Pulse Check
 //1. 
@@ -20,10 +20,22 @@ app.use(logUsers);
 
 //3.
 const logMethod = (req,res,next)=>{
-    console.log(req.method);
-    next()
+    if (users.length > 0){
+        console.log(req.method);
+        next()
+    } else {
+        const err = new Error("internal error");
+        err.status = 404;
+        next(err);
+    }
 }
 app.use("/users", logMethod);
+
+//5. 
+app.use((err,req,res,next)=>{
+    res.status(err.status);
+    res.json("no users")
+})
 
 app.get("/users", (req, res, next) => {
     res.json(users);

@@ -82,23 +82,22 @@ app.get("/users", (req, res, next) => {
 
 //5.
 const pRouter = (req,res,next)=>{
-    console.log("/products");
+    console.log("/products",req.path);
     next()
 }
 app.use("/products", pRouter);
 
 //6.
-// app.use((req,res,next)=>{
-//     if (res.body){
-//         const err = new Error("page doesn't exist")
-//         err.status = 404
-//         next(err)
-//     }
-// })
-// app.use((err,req,res,next)=>{
-//     res.status(err.status);
-//     res.json("NOT FOUND");
-// })
+app.use("*",(req,res,next)=>{
+    const err = new Error("page doesn't exist")
+    err.status = 404
+    next(err)
+    
+})
+app.use((err,req,res,next)=>{
+    res.status(err.status);
+    res.json("NOT FOUND");
+})
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
